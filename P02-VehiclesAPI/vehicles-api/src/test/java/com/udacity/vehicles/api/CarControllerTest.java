@@ -97,6 +97,15 @@ public class CarControllerTest {
          *   below (the vehicle will be the first in the list).
          */
 
+        Car car = getCar();
+        car.setId(1L);
+        mvc.perform(get("/cars")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$._embedded.carList[0].id", is(car.getId().intValue())))
+                .andExpect(jsonPath("$._embedded.carList[0].condition", is(String.valueOf(car.getCondition()))));
+
     }
 
     /**
@@ -109,6 +118,10 @@ public class CarControllerTest {
          * TODO: Add a test to check that the `get` method works by calling
          *   a vehicle by ID. This should utilize the car from `getCar()` below.
          */
+        mvc.perform(get("/cars/{id}", getCar().getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
     }
 
     /**
@@ -122,6 +135,9 @@ public class CarControllerTest {
          *   when the `delete` method is called from the Car Controller. This
          *   should utilize the car from `getCar()` below.
          */
+        Car car = getCar();
+        mvc.perform(delete("/cars/{id}", car.getId()))
+                .andExpect(status().isNoContent());
     }
 
     /**
